@@ -1,5 +1,5 @@
 
-const version = '2022-05-01-0';
+const version = '2022-05-01-1';
 
 /* 
  * SPA (Single-Page Application)
@@ -69,8 +69,8 @@ function viewLanding() {
     if ( ! localStorage.getItem('base64') ) {
         html += '<a href="?login"><button type="button">Login</button></a>';
     } else {
-        html += '<a href="?view=geosearch"><button type="button">GeoSearch</button></a>';
-        html += '<a href="?view=mylocation"><button type="button">MyLocation</button></a>';
+        html += '<a href="?view=geosearch"><button type="button">Geo Search</button></a>';
+        html += '<a href="?view=mylocation"><button type="button">My Location</button></a>';
     }
 
     header.innerHTML = `<a href="?"><button type="button">Home</button></a>`;
@@ -214,10 +214,11 @@ function viewMyLocation() {
     document.title = 'My Location';
 
     let html = '';
-        html += '<button id="find-me">Get my location</button><br/>';
+        html += '<button id="find-me">Get My Location</button><br/>';
         html += '<p id="status"></p>';
         html += '<a id="map-link" target="_blank"></a>';
         html += '<div id="geo-form"></div>';
+        html += '<div id="geo-output"></div>';
 
     header.innerHTML = `<a href="?"><button type="button">Home</button></a>
                         <a href="?view=mylocation"><button type="button">My Location</button></a>`;
@@ -234,6 +235,7 @@ function geoFindMe() {
   const status = document.querySelector('#status');
   const mapLink = document.querySelector('#map-link');
   const geoForm = document.querySelector('#geo-form');
+  const geoOut = document.querySelector('#geo-output');
 
   mapLink.href = '';
   mapLink.textContent = '';
@@ -330,7 +332,42 @@ async function submitGeoForm(event){
 
   const response = await post.json();
 
-  container.innerHTML = "<pre>" + JSON.stringify(response, null, 2) + "</pre>";
+  //var hits = Object.keys(response.hits);
+  //console.log(hits);
+  //var jsonObj = JSON.parse(response.hits);
+  //var hits = Object.keys(jsonObj.products);
+
+  let htmlSegment = '';
+
+  let hits = JSON.parse(JSON.stringify(response['hits']['hits']));
+
+  hits.forEach(item => {
+
+      //console.log(item);
+      //console.log(item['_source'].property_id);
+      console.log(item['_source'].street_address);
+      console.log(item['_source'].city);
+      console.log(item['_source'].state_or_province);
+      console.log(item['_source'].postal_code);
+      //console.log(item['_source'].latitude);
+      //console.log(item['_source'].longitude);
+
+      const street_address    = item['_source'].street_address;
+      const city              = item['_source'].city;
+      const state_or_province = item['_source'].state_or_province;
+      const postal_code       = item['_source'].postal_code;
+
+    //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
+    htmlSegment += `<div> ${street_address} ${city} ${state_or_province} ${postal_code} </div>`;
+
+  });
+
+  //alert(htmlSegment);
+
+  //document.querySelector('#geo-output')
+
+  document.querySelector('#geo-output').innerHTML = htmlSegment;
+
 
   history.pushState({page: 'mylocation-geo-submit'}, "mylocation-geo-submit", "?view=mylocation&geo=true&submit=true");
 
