@@ -79,4 +79,51 @@ alert(HaverSine(59.3293371,13.4877472,59.3225525,13.4619422).toFixed(1));
 
 ```
 
+open search geo queries...  
+
+```
+POST  ninfo-property/_search
+  { "query": {
+      "bool": {
+        "filter": {
+          "geo_distance": {
+            "distance": distance + "km",
+            "coordinate": {
+              "lat": parseFloat(latitude),
+              "lon": parseFloat(longitude)
+            }
+          }
+        }
+      }
+    }
+  }
+```
+
+in this case _geo_distance is an api call  
+```
+POST  ninfo-property/_search
+{
+  "query": {
+    "match_all": {}
+  },
+    "sort": [
+    {
+      "_geo_distance": {
+        "coordinate": {
+          "lat": 34.1895294,
+          "lon": -118.624725
+        },
+        "order": "asc",
+        "unit": "km",
+        "mode": "min",
+        "distance_type": "arc",
+        "ignore_unmapped": true
+      }
+    }
+  ]
+}
+
+```
+
+
 

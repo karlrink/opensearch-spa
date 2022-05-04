@@ -1,5 +1,5 @@
 
-const version = '2022-05-03-2';
+const version = '2022-05-03-3';
 
 /* 
  * SPA (Single-Page Application)
@@ -258,9 +258,6 @@ function geoFindMe() {
       <label for="longitude">longitude:</label>
       <input type="text" id="longitude" name="longitude" value="${longitude}">
       <br>
-      <label for="distance">distance:</label>
-      <input type="text" id="distance" name="distance" value="10">
-      <br>
       <button type="submit">Geo Search</button>
     </form>
     `;
@@ -285,26 +282,16 @@ async function submitGeoForm(event){
   
   event.preventDefault();
 
-  //const key_ = document.getElementById('patch').name;
-  //const val_ = event.target[key_].value;
-
   const latitude = event.target['latitude'].value;
   const longitude = event.target['longitude'].value;
-  const distance = event.target['distance'].value;
+  //const distance = event.target['distance'].value;
 
-  //const strTxt = '{ "' + key_ + '" : "' + val_ + '" }';
-  //const data = JSON.parse(strTxt);
+  //console.log(latitude);
+  //console.log(longitude);
+  //console.log(distance);
 
-  console.log(latitude);
-  console.log(longitude);
-  console.log(distance);
-
-// can you sort here at the query source?
-// and limit return sets?
-// and calc haversine distance?
-// https://www.elastic.co/guide/en/elasticsearch/reference/6.5/search-request-sort.html#geo-sorting
-
-  opensearch_data =
+/*
+  opensearch_data_v1 =
   { "query": {
       "bool": {
         "filter": {
@@ -319,6 +306,29 @@ async function submitGeoForm(event){
       }
     }
   }
+*/
+
+  opensearch_data =
+    {
+      "query": {
+        "match_all": {}
+      },
+        "sort": [
+        {
+          "_geo_distance": {
+            "coordinate": {
+              "lat": parseFloat(latitude),
+              "lon": parseFloat(longitude)
+            },
+            "order": "asc",
+            "unit": "km",
+            "mode": "min",
+            "distance_type": "arc",
+            "ignore_unmapped": true
+          }
+        }
+      ]
+    }
 
   const url = origin + "/ninfo-property/_search";
 
@@ -339,7 +349,7 @@ async function submitGeoForm(event){
 
   let htmlSegment = '';
 
-  let hits = JSON.parse(JSON.stringify(response['hits']['hits']));
+  const hits = JSON.parse(JSON.stringify(response['hits']['hits']));
 
   //const sortArray = [];
 
@@ -347,10 +357,10 @@ async function submitGeoForm(event){
 
       //console.log(item);
       //console.log(item['_source'].property_id);
-      console.log(item['_source'].street_address);
-      console.log(item['_source'].city);
-      console.log(item['_source'].state_or_province);
-      console.log(item['_source'].postal_code);
+      //console.log(item['_source'].street_address);
+      //console.log(item['_source'].city);
+      //console.log(item['_source'].state_or_province);
+      //console.log(item['_source'].postal_code);
       //console.log(item['_source'].latitude);
       //console.log(item['_source'].longitude);
 
@@ -385,6 +395,8 @@ async function submitGeoForm(event){
   });
 
   //sortArray.sort();
+
+  //  i think it is better to tune and sort the original search query, than to sortArray.sort() the data in javascript
 
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
   //for (const element of sortArray) {
