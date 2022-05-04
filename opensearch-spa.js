@@ -1,5 +1,5 @@
 
-const version = '2022-05-01-1';
+const version = '2022-05-03-0';
 
 /* 
  * SPA (Single-Page Application)
@@ -275,7 +275,7 @@ function geoFindMe() {
   if(!navigator.geolocation) {
     status.textContent = 'Geolocation is not supported by your browser';
   } else {
-    status.textContent = 'Locating…';
+    status.textContent = 'Locating...';
     navigator.geolocation.getCurrentPosition(success, error);
   }
 
@@ -332,14 +332,11 @@ async function submitGeoForm(event){
 
   const response = await post.json();
 
-  //var hits = Object.keys(response.hits);
-  //console.log(hits);
-  //var jsonObj = JSON.parse(response.hits);
-  //var hits = Object.keys(jsonObj.products);
-
   let htmlSegment = '';
 
   let hits = JSON.parse(JSON.stringify(response['hits']['hits']));
+
+  const sortArray = [];
 
   hits.forEach(item => {
 
@@ -357,10 +354,38 @@ async function submitGeoForm(event){
       const state_or_province = item['_source'].state_or_province;
       const postal_code       = item['_source'].postal_code;
 
+      const latitude_2        = item['_source'].latitude;
+      const longitude_2       = item['_source'].longitude;
+
+      const haversine_distance = HaverSine(latitude,longitude,latitude_2,longitude_2).toFixed(1);
+
+      const streetmap_href = `https://www.openstreetmap.org/#map=18/${latitude_2}/${longitude_2}`;
+
     //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
-    htmlSegment += `<div> ${street_address} ${city} ${state_or_province} ${postal_code} </div>`;
+    //htmlSegment += `<div>`;
+    //htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
+    //htmlSegment += `distance: ${haversine_distance} `;
+    //htmlSegment += `</div>`;
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+
+    // sort the data based on haversine_distance
+
+    const sortString = haversine_distance + " " + street_address + " " + city + " " + state_or_province + " " + postal_code + " " + streetmap_href;
+
+    sortArray.push(sortString);
 
   });
+
+  sortArray.sort();
+
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+
+  for (const element of sortArray) {
+    //console.log(element);
+    htmlSegment += `<div>${element}</div>`;
+  }
 
   //alert(htmlSegment);
 
@@ -368,12 +393,39 @@ async function submitGeoForm(event){
 
   document.querySelector('#geo-output').innerHTML = htmlSegment;
 
-
   history.pushState({page: 'mylocation-geo-submit'}, "mylocation-geo-submit", "?view=mylocation&geo=true&submit=true");
 
 }
 
 //-----------------------------------------------------------
+
+// This function takes in latitude and longitude of two location 
+// and returns the distance between them as the crow flies (in km)
+
+function HaverSine(lat1, lon1, lat2, lon2) 
+{
+  var R = 6371; // km
+  var dLat = toRad(lat2-lat1);
+  var dLon = toRad(lon2-lon1);
+  var lat1 = toRad(lat1);
+  var lat2 = toRad(lat2);
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c;
+  return d;
+}
+
+// Converts numeric degrees to radians
+function toRad(Value) 
+{
+    return Value * Math.PI / 180;
+}
+//alert(HaverSine(59.3293371,13.4877472,59.3225525,13.4619422).toFixed(1));
+
+//-----------------------------------------------------------
+
 // https://developer.mozilla.org/en-US/docs/Web/API/URL
 // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 
