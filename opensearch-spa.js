@@ -1,5 +1,5 @@
 
-const version = '2022-05-03-0';
+const version = '2022-05-03-1';
 
 /* 
  * SPA (Single-Page Application)
@@ -299,6 +299,10 @@ async function submitGeoForm(event){
   console.log(longitude);
   console.log(distance);
 
+// can you sort here at the query source?
+// and limit return sets?
+// and calc haversine distance?
+
   opensearch_data =
   { "query": {
       "bool": {
@@ -336,7 +340,7 @@ async function submitGeoForm(event){
 
   let hits = JSON.parse(JSON.stringify(response['hits']['hits']));
 
-  const sortArray = [];
+  //const sortArray = [];
 
   hits.forEach(item => {
 
@@ -362,30 +366,29 @@ async function submitGeoForm(event){
       const streetmap_href = `https://www.openstreetmap.org/#map=18/${latitude_2}/${longitude_2}`;
 
     //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
-    //htmlSegment += `<div>`;
-    //htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
-    //htmlSegment += `distance: ${haversine_distance} `;
-    //htmlSegment += `</div>`;
+    htmlSegment += `<div>`;
+    htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
+    htmlSegment += `distance: ${haversine_distance} `;
+    htmlSegment += `<a href="${streetmap_href}" target="_blank">${latitude_2},${longitude_2}</a>`;
+    htmlSegment += `</div>`;
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
 
     // sort the data based on haversine_distance
 
-    const sortString = haversine_distance + " " + street_address + " " + city + " " + state_or_province + " " + postal_code + " " + streetmap_href;
-
-    sortArray.push(sortString);
+    //const sortString = haversine_distance + " " + street_address + " " + city + " " + state_or_province + " " + postal_code + " " + streetmap_href;
+    //sortArray.push(sortString);
 
   });
 
-  sortArray.sort();
+  //sortArray.sort();
 
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
-
-  for (const element of sortArray) {
+  //for (const element of sortArray) {
     //console.log(element);
-    htmlSegment += `<div>${element}</div>`;
-  }
+  //  htmlSegment += `<div>${element}</div>`;
+  //}
 
   //alert(htmlSegment);
 
@@ -487,6 +490,6 @@ let run = router();
 
 const done = performance.now() - start;
 
-console.log(appname + ':' + done);
+console.log(appname + ' ' + version + ' ' + done);
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
