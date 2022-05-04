@@ -1,5 +1,5 @@
 
-const version = '2022-05-03-1';
+const version = '2022-05-03-2';
 
 /* 
  * SPA (Single-Page Application)
@@ -302,6 +302,7 @@ async function submitGeoForm(event){
 // can you sort here at the query source?
 // and limit return sets?
 // and calc haversine distance?
+// https://www.elastic.co/guide/en/elasticsearch/reference/6.5/search-request-sort.html#geo-sorting
 
   opensearch_data =
   { "query": {
@@ -369,7 +370,8 @@ async function submitGeoForm(event){
     htmlSegment += `<div>`;
     htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
     htmlSegment += `distance: ${haversine_distance} `;
-    htmlSegment += `<a href="${streetmap_href}" target="_blank">${latitude_2},${longitude_2}</a>`;
+    // tabnabbing rel="noopener noreferrer"
+    htmlSegment += `<a href="${streetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
     htmlSegment += `</div>`;
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
