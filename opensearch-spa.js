@@ -1,5 +1,5 @@
 
-const version = '2022-05-03-3';
+const version = '2022-05-04-0';
 
 /* 
  * SPA (Single-Page Application)
@@ -23,7 +23,6 @@ const footer    = document.querySelector('.page-footer');
 
 async function getResponse(response) {
     if ( ! response.ok) {
-        //return response;
         throw new Error(response.status + ' ' + response.statusText);
     }
     return response;
@@ -32,8 +31,8 @@ async function getResponse(response) {
 
 function Login() {
 
-    let login_origin = window.prompt("url: ", 'https://opensearch.nationsinfocorp.com');
-    //let login_origin = 'http://127.0.0.1:9200';
+    //let login_origin = window.prompt("url: ", 'http://127.0.0.1:9200');
+    let login_origin = 'https://opensearch.nationsinfocorp.com';
     let login_user = window.prompt("username: ");
     let login_pass = window.prompt("password: ");
     let login_base64 = btoa(login_user + ':' + login_pass);
@@ -278,7 +277,7 @@ function geoFindMe() {
 
 }
 
-async function submitGeoForm(event){
+async function submitGeoForm(event) {
   
   event.preventDefault();
 
@@ -380,33 +379,11 @@ async function submitGeoForm(event){
     htmlSegment += `<div>`;
     htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
     htmlSegment += `distance: ${haversine_distance} `;
-    // tabnabbing rel="noopener noreferrer"
+    // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
     htmlSegment += `<a href="${streetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
     htmlSegment += `</div>`;
 
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
-
-    // sort the data based on haversine_distance
-
-    //const sortString = haversine_distance + " " + street_address + " " + city + " " + state_or_province + " " + postal_code + " " + streetmap_href;
-    //sortArray.push(sortString);
-
   });
-
-  //sortArray.sort();
-
-  //  i think it is better to tune and sort the original search query, than to sortArray.sort() the data in javascript
-
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
-  //for (const element of sortArray) {
-    //console.log(element);
-  //  htmlSegment += `<div>${element}</div>`;
-  //}
-
-  //alert(htmlSegment);
-
-  //document.querySelector('#geo-output')
 
   document.querySelector('#geo-output').innerHTML = htmlSegment;
 
@@ -414,11 +391,15 @@ async function submitGeoForm(event){
 
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+
 //-----------------------------------------------------------
 
 // This function takes in latitude and longitude of two location 
 // and returns the distance between them as the crow flies (in km)
-
+// https://en.wikipedia.org/wiki/Haversine_formula
 function HaverSine(lat1, lon1, lat2, lon2) 
 {
   var R = 6371; // km
