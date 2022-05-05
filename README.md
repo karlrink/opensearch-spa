@@ -127,3 +127,6 @@ POST  ninfo-property/_search
 
 
 
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details  
+
+

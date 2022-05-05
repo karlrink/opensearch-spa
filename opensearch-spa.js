@@ -1,5 +1,5 @@
 
-const version = '2022-05-05-0';
+const version = '2022-05-05-1';
 
 /* 
  * SPA (Single-Page Application)
@@ -419,8 +419,13 @@ async function submitGeoForm(event) {
     let google_maps_href = `https://maps.google.com/maps?q=${latitude_2},${longitude_2}`;
 
     //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details
+
     htmlSegment += `<div>`;
-    htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
+    htmlSegment += `<details>`;
+    htmlSegment += `<summary>`;
+    htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code}`;
     htmlSegment += `( ${haversine_distance} `;
     // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
     htmlSegment += `<a href="${openstreetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
@@ -428,35 +433,27 @@ async function submitGeoForm(event) {
     htmlSegment += ` <a href="${google_maps_href}" target="_blank" rel="noopener noreferrer">📍</a>)`;
 
 
-    htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">pic1</a>`;
+    htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">👁️</a>`;
 
-
-    htmlSegment += `<div class="show">details</div>`;
-    htmlSegment += `<div class="hide">`;
+    htmlSegment += `</summary>`;
 
     for (let item in hits[hit]['_source']){
     
       let value = hits[hit]['_source'][item];
-
-      //console.log(item);
-      //console.log(value);
 
       if (value !== null) {
          //console.log(item);
          //console.log(value);
 
          htmlSegment += ` ${item} ${value} <br>`;
-         //htmlSegment += `<div class="show">details</div>`;
-         //htmlSegment += `<div class="hide">this is a lot of info here...</div>`;
       }
 
     }
 
-    htmlSegment += `</div>`;
+    htmlSegment += `</details>`;
     htmlSegment += `</div>`;
 
   }
-
 
   document.querySelector('#geo-output').innerHTML = htmlSegment;
 
