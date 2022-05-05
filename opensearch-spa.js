@@ -1,5 +1,5 @@
 
-const version = '2022-05-04-1';
+const version = '2022-05-05-0';
 
 /* 
  * SPA (Single-Page Application)
@@ -421,15 +421,15 @@ async function submitGeoForm(event) {
     //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
     htmlSegment += `<div>`;
     htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
-    htmlSegment += `distance: ${haversine_distance} `;
+    htmlSegment += `( ${haversine_distance} `;
     // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
     htmlSegment += `<a href="${openstreetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
 
-    htmlSegment += ` <a href="${google_maps_href}" target="_blank" rel="noopener noreferrer">📍</a>`;
+    htmlSegment += ` <a href="${google_maps_href}" target="_blank" rel="noopener noreferrer">📍</a>)`;
+
 
     htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">pic1</a>`;
 
-    htmlSegment += `</div>`;
 
     htmlSegment += `<div class="show">details</div>`;
     htmlSegment += `<div class="hide">`;
@@ -452,6 +452,7 @@ async function submitGeoForm(event) {
 
     }
 
+    htmlSegment += `</div>`;
     htmlSegment += `</div>`;
 
   }
