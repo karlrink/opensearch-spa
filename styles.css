@@ -55,3 +55,14 @@ section {
     margin-left: auto;
 }
 
+/* https://www.w3schools.com/howto/howto_css_display_element_hover.asp */
+
+.hide {
+  display: none;
+}
+
+.show:hover + .hide {
+  display: block;
+  color: red;
+}
+

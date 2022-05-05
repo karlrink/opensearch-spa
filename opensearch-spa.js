@@ -1,5 +1,5 @@
 
-const version = '2022-05-04-0';
+const version = '2022-05-04-1';
 
 /* 
  * SPA (Single-Page Application)
@@ -350,8 +350,7 @@ async function submitGeoForm(event) {
 
   const hits = JSON.parse(JSON.stringify(response['hits']['hits']));
 
-  //const sortArray = [];
-
+/*
   hits.forEach(item => {
 
       //console.log(item);
@@ -371,6 +370,8 @@ async function submitGeoForm(event) {
       const latitude_2        = item['_source'].latitude;
       const longitude_2       = item['_source'].longitude;
 
+      const picture_data_source_url = item['_source'].picture_data_source_url;
+
       const haversine_distance = HaverSine(latitude,longitude,latitude_2,longitude_2).toFixed(1);
 
       const streetmap_href = `https://www.openstreetmap.org/#map=18/${latitude_2}/${longitude_2}`;
@@ -381,9 +382,80 @@ async function submitGeoForm(event) {
     htmlSegment += `distance: ${haversine_distance} `;
     // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
     htmlSegment += `<a href="${streetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
+    htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">pic1</a>`;
     htmlSegment += `</div>`;
 
+    //htmlSegment += `<div class="show">details</div>`;
+    //htmlSegment += `<div class="hide">this is a lot of info here...</div>`;
+
   });
+*/
+
+  //console.log(hits);
+  //console.log(hits[0]);
+
+  for (let hit in hits) {
+  
+    //let value = hits[key];
+    //console.log(key);
+    //console.log(value);
+
+    //console.log(hits[hit]['_source'].street_address);
+
+    let street_address    = hits[hit]['_source'].street_address;
+    let city              = hits[hit]['_source'].city;
+    let state_or_province = hits[hit]['_source'].state_or_province;
+    let postal_code       = hits[hit]['_source'].postal_code;
+
+    let latitude_2        = hits[hit]['_source'].latitude;
+    let longitude_2       = hits[hit]['_source'].longitude;
+
+    let picture_data_source_url = hits[hit]['_source'].picture_data_source_url;
+
+    let haversine_distance = HaverSine(latitude,longitude,latitude_2,longitude_2).toFixed(1);
+
+    let openstreetmap_href = `https://www.openstreetmap.org/#map=18/${latitude_2}/${longitude_2}`;
+
+    let google_maps_href = `https://maps.google.com/maps?q=${latitude_2},${longitude_2}`;
+
+    //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
+    htmlSegment += `<div>`;
+    htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
+    htmlSegment += `distance: ${haversine_distance} `;
+    // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
+    htmlSegment += `<a href="${openstreetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
+
+    htmlSegment += ` <a href="${google_maps_href}" target="_blank" rel="noopener noreferrer">📍</a>`;
+
+    htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">pic1</a>`;
+
+    htmlSegment += `</div>`;
+
+    htmlSegment += `<div class="show">details</div>`;
+    htmlSegment += `<div class="hide">`;
+
+    for (let item in hits[hit]['_source']){
+    
+      let value = hits[hit]['_source'][item];
+
+      //console.log(item);
+      //console.log(value);
+
+      if (value !== null) {
+         //console.log(item);
+         //console.log(value);
+
+         htmlSegment += ` ${item} ${value} <br>`;
+         //htmlSegment += `<div class="show">details</div>`;
+         //htmlSegment += `<div class="hide">this is a lot of info here...</div>`;
+      }
+
+    }
+
+    htmlSegment += `</div>`;
+
+  }
+
 
   document.querySelector('#geo-output').innerHTML = htmlSegment;
 
