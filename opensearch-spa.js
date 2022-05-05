@@ -1,5 +1,5 @@
 
-const version = '2022-05-05-1';
+const version = '2022-05-05-2';
 
 /* 
  * SPA (Single-Page Application)
@@ -350,58 +350,8 @@ async function submitGeoForm(event) {
 
   const hits = JSON.parse(JSON.stringify(response['hits']['hits']));
 
-/*
-  hits.forEach(item => {
-
-      //console.log(item);
-      //console.log(item['_source'].property_id);
-      //console.log(item['_source'].street_address);
-      //console.log(item['_source'].city);
-      //console.log(item['_source'].state_or_province);
-      //console.log(item['_source'].postal_code);
-      //console.log(item['_source'].latitude);
-      //console.log(item['_source'].longitude);
-
-      const street_address    = item['_source'].street_address;
-      const city              = item['_source'].city;
-      const state_or_province = item['_source'].state_or_province;
-      const postal_code       = item['_source'].postal_code;
-
-      const latitude_2        = item['_source'].latitude;
-      const longitude_2       = item['_source'].longitude;
-
-      const picture_data_source_url = item['_source'].picture_data_source_url;
-
-      const haversine_distance = HaverSine(latitude,longitude,latitude_2,longitude_2).toFixed(1);
-
-      const streetmap_href = `https://www.openstreetmap.org/#map=18/${latitude_2}/${longitude_2}`;
-
-    //htmlSegment += street_address + ' ' + city + ' ' + state_or_province + ' ' + postal_code + '<br>';
-    htmlSegment += `<div>`;
-    htmlSegment += `${street_address} ${city} ${state_or_province} ${postal_code} `;
-    htmlSegment += `distance: ${haversine_distance} `;
-    // prevent tabnabbing with rel="noopener noreferrer" https://en.wikipedia.org/wiki/Tabnabbing
-    htmlSegment += `<a href="${streetmap_href}" target="_blank" rel="noopener noreferrer">${latitude_2},${longitude_2}</a>`;
-    htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">pic1</a>`;
-    htmlSegment += `</div>`;
-
-    //htmlSegment += `<div class="show">details</div>`;
-    //htmlSegment += `<div class="hide">this is a lot of info here...</div>`;
-
-  });
-*/
-
-  //console.log(hits);
-  //console.log(hits[0]);
-
   for (let hit in hits) {
   
-    //let value = hits[key];
-    //console.log(key);
-    //console.log(value);
-
-    //console.log(hits[hit]['_source'].street_address);
-
     let street_address    = hits[hit]['_source'].street_address;
     let city              = hits[hit]['_source'].city;
     let state_or_province = hits[hit]['_source'].state_or_province;
@@ -432,11 +382,11 @@ async function submitGeoForm(event) {
 
     htmlSegment += ` <a href="${google_maps_href}" target="_blank" rel="noopener noreferrer">📍</a>)`;
 
-
     htmlSegment += ` <a href="${picture_data_source_url}" target="_blank" rel="noopener noreferrer">👁️</a>`;
 
     htmlSegment += `</summary>`;
 
+    htmlSegment += `<p>`;
     for (let item in hits[hit]['_source']){
     
       let value = hits[hit]['_source'][item];
@@ -444,12 +394,12 @@ async function submitGeoForm(event) {
       if (value !== null) {
          //console.log(item);
          //console.log(value);
-
-         htmlSegment += ` ${item} ${value} <br>`;
+         htmlSegment += ` ${item}: ${value} <br>`;
       }
 
     }
 
+    htmlSegment += `</p>`;
     htmlSegment += `</details>`;
     htmlSegment += `</div>`;
 
@@ -464,6 +414,7 @@ async function submitGeoForm(event) {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre
 
 //-----------------------------------------------------------
 
